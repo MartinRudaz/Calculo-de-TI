@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformador de Corriente</title>
+</head>
+<body>
+    <h1>Cálculo de Transformador de Corriente</h1>
+    <form id="transformerForm">
+        <!-- Campos de entrada para cada variable -->
+        <label for="txt">Prestacion:</label><input type="number" id="txt" name="txt"><br>
+        <label for="txt2">Corriente Primaria:</label><input type="number" id="txt2" name="txt2"><br>
+        <label for="txt3">Corriente Secundaria:</label><input type="number" id="txt3" name="txt3"><br>
+        <label for="txt4">FS:</label><input type="number" id="txt4" name="txt4"><br>
+        <label for="txt5">Frecuencia:</label><input type="number" id="txt5" name="txt5"><br>
+        <label for="txt6">Factor de Apilado:</label><input type="number" step="0.01" id="txt6" name="txt6"><br>
+        <label for="txt7">Diam. Conductor:</label><input type="number" id="txt7" name="txt7"><br>
+        <label for="txt8">Diam. Interno:</label><input type="number" id="txt8" name="txt8"><br>
+        <label for="txt9">Espiras:</label><input type="number" id="txt9" name="txt9"><br>
+        <label for="txt10">PF:</label><input type="number" step="0.01" id="txt10" name="txt10"><br>
+        <label for="txt11">Ancho de Fleje:</label><input type="number" id="txt11" name="txt11"><br>
+        <label for="txt12">Apilado:</label><input type="number" id="txt12" name="txt12"><br>
+        <button type="button" onclick="calculate()">Calcular</button>
+    </form>
+    <h2>Resultados:</h2>
+    <pre id="result"></pre>
+
+    <script>
+        async function calculate() {
+    const formData = new FormData(document.getElementById("transformerForm"));
+    const data = {};
+    formData.forEach((value, key) => {
+        data[key] = parseFloat(value);
+    });
+
+    const response = await fetch("http://127.0.0.1:8000/calculate", {  // Cambia esta línea
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+    document.getElementById("result").textContent = JSON.stringify(result, null, 2);
+	}
+    </script>
+</body>
+</html>
