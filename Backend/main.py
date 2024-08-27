@@ -41,21 +41,21 @@ async def calculate_transformer(input: TransformerInput):
     carga = 1
     tensionsecundaria = input.txt / input.txt3
     areanucleocm2 = (input.txt11 * input.txt12 * input.txt6) * 10 ** (-2)
-    Induccion = tensionsecundaria / txt9irasteoricas / input.txt9 / 4.44 / input.txt5 / areanucleocm2 * 10 ** 4
+    Induccion = tensionsecundaria / input.txt9 / 4.44 / input.txt5 / areanucleocm2 * 10 ** 4
 
     if Induccion > 0.5:
         H = 11.852 * Induccion ** 2 - 4.026 * Induccion + 9.1573
     else:
         H = 15.49 * Induccion ** 0.6309
 
-    if tensionsecundaria < 0.163:
+    if Induccion < 0.163:
         ctecorr = 794.39 * Induccion ** 4 - 566.01 * Induccion ** 3 + 138.27 * Induccion ** 2 - 13.63 * Induccion + 1.7174
-    elif tensionsecundaria < 1.0977:
+    elif Induccion < 1.0977:
         ctecorr = 1.279
     else:
         ctecorr = -62.4817 * Induccion ** 6 + 482.9707 * Induccion ** 5 - 1523.8608 * Induccion ** 4 + 2512.1181 * Induccion ** 3 - 2284.8936 * Induccion ** 2 + 1088.765 * Induccion - 211.3421
 
-    Io = H * longitud / txt9irasteoricas / input.txt9 / ctecorr
+    Io = H * longitud / txt9irasteoricas / ctecorr * 1.1
     errorimag = Io / input.txt3 * 100
     vecesacodosaturacion = 1.35 / Induccion
     areanucleom2 = input.txt11 * input.txt12 * input.txt6 * 10 ** (-6)
@@ -68,7 +68,7 @@ async def calculate_transformer(input: TransformerInput):
 
     erroripderdidas = corrientedeperdidas / input.txt3 * 100
     corrientetotalcircmag = (Io ** 2 + corrientedeperdidas ** 2) ** 0.5
-    errordemoduloA = (-(errorimag * senphi + erroripderdidas * input.txt10)) + (txt9irasteoricas / input.txt9 / txt9irasteoricas / input.txt9 - 1) * 100
+    errordemoduloA = (-(errorimag * senphi + erroripderdidas * input.txt10)) + (txt9irasteoricas / input.txt9 - 1) * 100
     errordeAngulo = (ctecorr * input.txt10 - corrientetotalcircmag * senphi) * 20
     Induccionatxt4 = tensionsecundaria * input.txt4 / txt9irasteoricas / input.txt9 / 4.44 / input.txt5 / areanucleocm2 * 10 ** 4
     ConsumoInterno = (input.txt3 ** 2) * resistenciaconductor
@@ -80,6 +80,9 @@ async def calculate_transformer(input: TransformerInput):
         "errorimag": errorimag,
         "errordemoduloA": errordemoduloA,
         "errordeAngulo": errordeAngulo,
-        "ConsumoInterno": ConsumoInterno
+        "ConsumoInterno": ConsumoInterno,
+        "H":H,
+        "Longitud":longitud,
+        "ctecorr":ctecorr
     }
 pass
