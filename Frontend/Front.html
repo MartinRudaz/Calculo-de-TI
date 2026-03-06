@@ -4,64 +4,216 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transformador de Corriente</title>
+    <style>
+        :root {
+            --bg: #f4f7fb;
+            --panel: #ffffff;
+            --primary: #1f6feb;
+            --text: #1b2533;
+            --muted: #607188;
+            --border: #d8e0ea;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text);
+            background: linear-gradient(160deg, #eef3fb 0%, #f9fbff 100%);
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .layout {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            gap: 18px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+            padding: 20px;
+        }
+
+        h1, h2 { margin-top: 0; }
+        p { color: var(--muted); margin-top: 0; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        input {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 11px;
+            font-size: 1rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: none;
+            border-radius: 9px;
+            background: var(--primary);
+            color: white;
+            padding: 10px 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button.secondary {
+            background: #3d4b5f;
+        }
+
+        pre {
+            border: 1px solid var(--border);
+            background: #f8fbff;
+            border-radius: 10px;
+            padding: 12px;
+            min-height: 120px;
+            overflow-x: auto;
+        }
+
+        .svg-note {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Cálculo de Transformador de Corriente</h1>
-    <form id="transformerForm">
-        <label for="txt">Prestación:</label><input type="number" id="txt" name="txt" required><br>
-        <label for="txt2">Corriente Primaria:</label><input type="number" id="txt2" name="txt2" required><br>
-        <label for="txt3">Corriente Secundaria:</label><input type="number" id="txt3" name="txt3" required><br>
-        <label for="txt4">FS:</label><input type="number" id="txt4" name="txt4" required><br>
-        <label for="txt5">Frecuencia:</label><input type="number" id="txt5" name="txt5" required><br>
-        <label for="txt6">Factor de Apilado:</label><input type="number" step="0.01" id="txt6" name="txt6" required><br>
-        <label for="txt7">Diám. Conductor:</label><input type="number" id="txt7" name="txt7" required><br>
-        <label for="txt8">Diám. Interno:</label><input type="number" id="txt8" name="txt8" required><br>
-        <label for="txt9">Espiras:</label><input type="number" id="txt9" name="txt9" required><br>
-        <label for="txt10">PF:</label><input type="number" step="0.01" id="txt10" name="txt10" required><br>
-        <label for="txt11">Ancho de Fleje:</label><input type="number" id="txt11" name="txt11" required><br>
-        <label for="txt12">Apilado:</label><input type="number" id="txt12" name="txt12" required><br>
-        <button type="button" onclick="calculate()">Calcular y guardar</button>
-        <button type="button" onclick="loadHistory()">Ver historial</button>
-    </form>
+    <div class="layout">
+        <section class="card" style="grid-column: 1/-1;">
+            <h1>Cálculo de Transformador de Corriente</h1>
+            <p>Formulario con variables descriptivas y vista del toroide con dimensiones de referencia.</p>
 
-    <h2>Último resultado:</h2>
-    <pre id="result"></pre>
+            <form id="transformerForm">
+                <div class="form-grid">
+                    <div class="field"><label for="prestacion_va">Prestación (VA)</label><input type="number" id="prestacion_va" name="prestacion_va" required></div>
+                    <div class="field"><label for="corriente_primaria_a">Corriente Primaria (A)</label><input type="number" id="corriente_primaria_a" name="corriente_primaria_a" required></div>
+                    <div class="field"><label for="corriente_secundaria_a">Corriente Secundaria (A)</label><input type="number" id="corriente_secundaria_a" name="corriente_secundaria_a" required></div>
+                    <div class="field"><label for="factor_seguridad_fs">FS</label><input type="number" id="factor_seguridad_fs" name="factor_seguridad_fs" required></div>
+                    <div class="field"><label for="frecuencia_hz">Frecuencia (Hz)</label><input type="number" id="frecuencia_hz" name="frecuencia_hz" required></div>
+                    <div class="field"><label for="factor_apilado">Factor de Apilado</label><input type="number" step="0.01" id="factor_apilado" name="factor_apilado" required></div>
+                    <div class="field"><label for="diametro_conductor_mm">Diám. Conductor (mm)</label><input type="number" id="diametro_conductor_mm" name="diametro_conductor_mm" required></div>
+                    <div class="field"><label for="diametro_interno_mm">Diám. Interno (mm)</label><input type="number" id="diametro_interno_mm" name="diametro_interno_mm" required></div>
+                    <div class="field"><label for="espiras_nucleo">Espiras</label><input type="number" id="espiras_nucleo" name="espiras_nucleo" required></div>
+                    <div class="field"><label for="factor_potencia">PF</label><input type="number" step="0.01" id="factor_potencia" name="factor_potencia" required></div>
+                    <div class="field"><label for="ancho_fleje_mm">Ancho de Fleje (mm)</label><input type="number" id="ancho_fleje_mm" name="ancho_fleje_mm" required></div>
+                    <div class="field"><label for="apilado_mm">Apilado (mm)</label><input type="number" id="apilado_mm" name="apilado_mm" required></div>
+                </div>
+                <div class="actions">
+                    <button type="button" onclick="calculate()">Calcular y guardar</button>
+                    <button type="button" class="secondary" onclick="loadHistory()">Ver historial</button>
+                </div>
+            </form>
+        </section>
 
-    <h2>Historial:</h2>
-    <pre id="history"></pre>
+        <section class="card">
+            <h2>Dibujo del toroide</h2>
+            <svg viewBox="0 0 360 220" width="100%" aria-label="Dibujo de toroide">
+                <ellipse cx="180" cy="110" rx="130" ry="75" fill="#edf4ff" stroke="#1f6feb" stroke-width="2"></ellipse>
+                <ellipse cx="180" cy="110" rx="65" ry="35" fill="#ffffff" stroke="#1f6feb" stroke-width="2"></ellipse>
+
+                <line x1="50" y1="30" x2="310" y2="30" stroke="#334155" stroke-width="1.8"></line>
+                <line x1="50" y1="24" x2="50" y2="36" stroke="#334155" stroke-width="1.8"></line>
+                <line x1="310" y1="24" x2="310" y2="36" stroke="#334155" stroke-width="1.8"></line>
+                <text id="outerDiameterText" x="180" y="20" text-anchor="middle" fill="#334155" font-size="13">Ø Ext: - mm</text>
+
+                <line x1="115" y1="190" x2="245" y2="190" stroke="#334155" stroke-width="1.8"></line>
+                <line x1="115" y1="184" x2="115" y2="196" stroke="#334155" stroke-width="1.8"></line>
+                <line x1="245" y1="184" x2="245" y2="196" stroke="#334155" stroke-width="1.8"></line>
+                <text id="innerDiameterText" x="180" y="209" text-anchor="middle" fill="#334155" font-size="13">Ø Int: - mm</text>
+
+                <text id="stackText" x="180" y="114" text-anchor="middle" fill="#1f6feb" font-size="12">Apilado: - mm</text>
+            </svg>
+            <p class="svg-note">El diámetro exterior se estima para una referencia visual rápida con las dimensiones ingresadas.</p>
+        </section>
+
+        <section class="card">
+            <h2>Último resultado</h2>
+            <pre id="result"></pre>
+        </section>
+
+        <section class="card" style="grid-column: 1/-1;">
+            <h2>Historial</h2>
+            <pre id="history"></pre>
+        </section>
+    </div>
 
     <script>
         const API_BASE_URL = "http://127.0.0.1:8000";
 
         function formToJson() {
             const formData = new FormData(document.getElementById("transformerForm"));
-            const data = {};
-            formData.forEach((value, key) => {
-                data[key] = parseFloat(value);
+            const payload = {};
+            formData.forEach((rawValue, fieldName) => {
+                payload[fieldName] = parseFloat(rawValue);
             });
-            return data;
+            return payload;
+        }
+
+        function updateToroidDrawing() {
+            const diametroInterno = parseFloat(document.getElementById("diametro_interno_mm").value) || 0;
+            const diametroConductor = parseFloat(document.getElementById("diametro_conductor_mm").value) || 0;
+            const apilado = parseFloat(document.getElementById("apilado_mm").value) || 0;
+            const corrientePrimaria = parseFloat(document.getElementById("corriente_primaria_a").value) || 0;
+            const corrienteSecundaria = parseFloat(document.getElementById("corriente_secundaria_a").value) || 1;
+            const espirasNucleo = parseFloat(document.getElementById("espiras_nucleo").value) || 1;
+
+            const espirasTeoricas = corrienteSecundaria === 0 ? 0 : corrientePrimaria / corrienteSecundaria;
+            const vueltasPorCapa = Math.max(1, Math.floor(diametroInterno * 3.14 / (diametroConductor + 0.5 || 1)));
+            const capas = Math.ceil((espirasTeoricas || 0) / espirasNucleo / vueltasPorCapa) || 0;
+            const diametroExterno = Math.max(0, diametroInterno + (2 * apilado) + (2 * (capas * (diametroConductor + 0.5))));
+
+            document.getElementById("innerDiameterText").textContent = `Ø Int: ${diametroInterno.toFixed(1)} mm`;
+            document.getElementById("outerDiameterText").textContent = `Ø Ext: ${diametroExterno.toFixed(1)} mm`;
+            document.getElementById("stackText").textContent = `Apilado: ${apilado.toFixed(1)} mm`;
         }
 
         async function calculate() {
-            const data = formToJson();
+            const payload = formToJson();
 
             const response = await fetch(`${API_BASE_URL}/calculate`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify(payload)
             });
 
             if (!response.ok) {
-                const error = await response.text();
-                document.getElementById("result").textContent = `Error: ${error}`;
+                const errorText = await response.text();
+                document.getElementById("result").textContent = `Error: ${errorText}`;
                 return;
             }
 
-            const result = await response.json();
-            document.getElementById("result").textContent = JSON.stringify(result, null, 2);
-
+            const calculation = await response.json();
+            document.getElementById("result").textContent = JSON.stringify(calculation, null, 2);
             await loadHistory();
         }
 
@@ -69,14 +221,20 @@
             const response = await fetch(`${API_BASE_URL}/calculations?limit=10`);
 
             if (!response.ok) {
-                const error = await response.text();
-                document.getElementById("history").textContent = `Error al cargar historial: ${error}`;
+                const errorText = await response.text();
+                document.getElementById("history").textContent = `Error al cargar historial: ${errorText}`;
                 return;
             }
 
             const history = await response.json();
             document.getElementById("history").textContent = JSON.stringify(history, null, 2);
         }
+
+        document.querySelectorAll("#transformerForm input").forEach((inputField) => {
+            inputField.addEventListener("input", updateToroidDrawing);
+        });
+
+        updateToroidDrawing();
     </script>
 </body>
 </html>

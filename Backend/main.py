@@ -7,7 +7,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
+from pydantic import AliasChoices, BaseModel, Field
 
 from TI import calculate_transformer_values
 
@@ -25,18 +25,50 @@ app.add_middleware(
 
 
 class TransformerInput(BaseModel):
-    txt: float = Field(..., description="Prestacion")
-    txt2: float = Field(..., description="Corriente Primaria")
-    txt3: float = Field(..., description="Corriente Secundaria")
-    txt4: float = Field(..., description="FS")
-    txt5: float = Field(..., description="Frecuencia")
-    txt6: float = Field(..., description="Factor de Apilado")
-    txt7: float = Field(..., description="Diam. Conductor")
-    txt8: float = Field(..., description="Diam. Interno")
-    txt9: float = Field(..., description="Espiras")
-    txt10: float = Field(..., description="PF")
-    txt11: float = Field(..., description="Ancho de Fleje")
-    txt12: float = Field(..., description="Apilado")
+    prestacion_va: float = Field(..., description="Prestación (VA)", validation_alias=AliasChoices("prestacion_va", "txt"))
+    corriente_primaria_a: float = Field(
+        ...,
+        description="Corriente primaria (A)",
+        validation_alias=AliasChoices("corriente_primaria_a", "txt2"),
+    )
+    corriente_secundaria_a: float = Field(
+        ...,
+        description="Corriente secundaria (A)",
+        validation_alias=AliasChoices("corriente_secundaria_a", "txt3"),
+    )
+    factor_seguridad_fs: float = Field(
+        ...,
+        description="Factor de seguridad",
+        validation_alias=AliasChoices("factor_seguridad_fs", "txt4"),
+    )
+    frecuencia_hz: float = Field(..., description="Frecuencia (Hz)", validation_alias=AliasChoices("frecuencia_hz", "txt5"))
+    factor_apilado: float = Field(
+        ...,
+        description="Factor de apilado",
+        validation_alias=AliasChoices("factor_apilado", "txt6"),
+    )
+    diametro_conductor_mm: float = Field(
+        ...,
+        description="Diámetro del conductor (mm)",
+        validation_alias=AliasChoices("diametro_conductor_mm", "txt7"),
+    )
+    diametro_interno_mm: float = Field(
+        ...,
+        description="Diámetro interno (mm)",
+        validation_alias=AliasChoices("diametro_interno_mm", "txt8"),
+    )
+    espiras_nucleo: float = Field(..., description="Espiras", validation_alias=AliasChoices("espiras_nucleo", "txt9"))
+    factor_potencia: float = Field(
+        ...,
+        description="Factor de potencia",
+        validation_alias=AliasChoices("factor_potencia", "txt10"),
+    )
+    ancho_fleje_mm: float = Field(
+        ...,
+        description="Ancho de fleje (mm)",
+        validation_alias=AliasChoices("ancho_fleje_mm", "txt11"),
+    )
+    apilado_mm: float = Field(..., description="Apilado (mm)", validation_alias=AliasChoices("apilado_mm", "txt12"))
 
 
 class CalculationRecord(BaseModel):
